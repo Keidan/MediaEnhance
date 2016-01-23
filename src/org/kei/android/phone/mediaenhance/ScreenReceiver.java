@@ -34,7 +34,7 @@ public class ScreenReceiver extends BroadcastReceiver {
     } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
       screenOff = false;
     }
-    final Intent i = new Intent(context, MediaEnhance.class);
+    final Intent i = new Intent(context, MediaEnhanceService.class);
     i.putExtra(SCREEN_STATE_KEY, screenOff);
     context.startService(i);
   }

@@ -1,6 +1,16 @@
 <resources>
 
     <string name="app_name">MediaEnhance</string>
+    <string name="empty"></string>
     <string name="toast_started">Media enhance started.</string>
-
+    <string name="toast_stopped">Media enhance stopped.</string>
+    <string name="toast_permission">Media enhance permission error.</string>
+    <string name="tvDelayUp">Delay between up (ms): </string>
+    <string name="tvDelayDown">Delay between down (ms): </string>
+    <string name="tvNbUp">Number of up: </string>
+    <string name="tvNbDown">Number of down: </string>
+    <string name="btApply">Apply</string>
+    <string name="toggleOn">Start detection</string>
+    <string name="toggleOff">Stop detection</string>
+    <string name="lblWarning">Make sure the application can access to the notifications:\nGo to Settings -> Sound &amp; Notification -> Notification access -> Select checkbox next to this app.</string>
 </resources>

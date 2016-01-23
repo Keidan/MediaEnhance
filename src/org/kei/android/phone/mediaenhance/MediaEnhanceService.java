@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.RemoteController;
 import android.media.RemoteController.MetadataEditor;
@@ -11,12 +12,13 @@ import android.media.RemoteController.OnClientUpdateListener;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.KeyEvent;
 
 /**
  *******************************************************************************
- * @file MediaEnhance.java
+ * @file MediaEnhanceService.java
  * @author Keidan
  * @date 21/01/2016
  * @par Project MediaEnhance
@@ -35,27 +37,40 @@ import android.view.KeyEvent;
  */
 
 @SuppressWarnings("deprecation")
-public class MediaEnhance extends Service implements OnClientUpdateListener{
-  private static final int        TIME_DELAY               = 1000;
-  private static final int        DELTA_DOWN               = 2;
-  private static final int        DELTA_UP                 = -2;
+public class MediaEnhanceService extends Service implements OnClientUpdateListener{
+  public static final String      KEY_TIME_DELAY_UP        = "timeDelayUp";
+  public static final String      KEY_TIME_DELAY_DOWN      = "timeDelayDown";
+  public static final String      KEY_DELTA_DOWN           = "deltaDown";
+  public static final String      KEY_DELTA_UP             = "deltaUp";
+  public static final String      ACTION_SENPUKU           = "action_senpuku";
+  public static final String      ACTION_APPLY             = "action_apply";
+  public static final int         DEFAULT_TIME_DELAY       = 1000;
+  public static final int         DEFAULT_DELTA            = 2;
   private ScreenReceiver          mScreenReceiver          = null;
   private final IBinder           mBinder                  = new MediaEnhanceBinder();
   private SettingsContentObserver mSettingsContentObserver = null;
   private boolean                 screenOff                = false;
-  private long                    previousDelay            = 0;
+  private long                    previousDelayUp          = 0;
+  private long                    previousDelayDown        = 0;
+  private long                    timeDelayUp              = DEFAULT_TIME_DELAY;
+  private long                    timeDelayDown            = DEFAULT_TIME_DELAY;
+  private int                     deltaUp                  = -(DEFAULT_DELTA);
+  private int                     deltaDown                = DEFAULT_DELTA;
   private int                     previousVolume           = 0;
   private RemoteController        mRemoteController        = null;
+  private boolean                 senpuku                  = false;
+  private boolean                 createError              = false;
 
   public class MediaEnhanceBinder extends Binder {
-    MediaEnhance getService() {
-      return MediaEnhance.this;
+    MediaEnhanceService getService() {
+      return MediaEnhanceService.this;
     }
   }
 
   @Override
   public void onCreate() {
     super.onCreate();
+    loadConfig();
     // register receiver that handles screen on and screen off logic
     final IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
     filter.addAction(Intent.ACTION_SCREEN_OFF);
@@ -69,13 +84,28 @@ public class MediaEnhance extends Service implements OnClientUpdateListener{
     
     final AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
     previousVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
-    previousDelay = System.currentTimeMillis();
     mRemoteController = new RemoteController(this, this);
-    audio.registerRemoteController(mRemoteController);
+    try {
+      audio.registerRemoteController(mRemoteController);
+    } catch(Exception e) {
+      createError = true;
+    }
+  }
+  
+  private void loadConfig() {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    timeDelayUp = prefs.getLong(KEY_TIME_DELAY_UP, DEFAULT_TIME_DELAY);
+    timeDelayDown = prefs.getLong(KEY_TIME_DELAY_DOWN, DEFAULT_TIME_DELAY);
+    deltaUp = -(prefs.getInt(KEY_DELTA_UP, DEFAULT_DELTA));
+    deltaDown = prefs.getInt(KEY_DELTA_DOWN, DEFAULT_DELTA);
+    previousDelayUp = System.currentTimeMillis();
+    previousDelayDown = System.currentTimeMillis();
   }
 
   @Override
   public void onDestroy() {
+    super.onDestroy();
+    Tools.toast(this, getResources().getString(R.string.toast_stopped));
     if (mScreenReceiver != null) {
       unregisterReceiver(mScreenReceiver);
       mScreenReceiver = null;
@@ -90,16 +120,21 @@ public class MediaEnhance extends Service implements OnClientUpdateListener{
       audio.unregisterRemoteController(mRemoteController);
       mRemoteController = null;
     }
-    /* restart the activity */
-    final Intent intent = new Intent(this, DummyActivity.class);
-    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    startActivity(intent);
+    if(!senpuku && !createError) {
+      /* restart the activity */
+      final Intent intent = new Intent(this, MediaEnhanceActivity.class);
+      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      startActivity(intent);
+    }
   }
 
   @Override
   public int onStartCommand(final Intent intent, final int flags,
       final int startId) {
-    Tools.toast(this, getResources().getString(R.string.toast_started));
+    if(createError)
+      Tools.toast(this, getResources().getString(R.string.toast_permission));
+    else
+      Tools.toast(this, getResources().getString(R.string.toast_started));
     screenOff = !Tools.isScreenOn(this);
     boolean volumeUpdate = false;
     if (intent != null) {
@@ -108,6 +143,13 @@ public class MediaEnhance extends Service implements OnClientUpdateListener{
             !Tools.isScreenOn(this));
       else if (intent.hasExtra(SettingsContentObserver.MEDIA_ACTION_KEY))
         volumeUpdate = true;
+      else if (intent.hasExtra(ACTION_APPLY))
+        loadConfig();
+      else if (intent.hasExtra(ACTION_SENPUKU)) {
+        senpuku = true;
+        stopSelf();
+        return START_NOT_STICKY;
+      }
     }
     
      Log.i(getClass().getSimpleName(), "Service started with i:" + intent +
@@ -119,19 +161,23 @@ public class MediaEnhance extends Service implements OnClientUpdateListener{
           .getStreamVolume(AudioManager.STREAM_MUSIC);
       final int delta = previousVolume - currentVolume;
       final long delay = System.currentTimeMillis();
-      if (previousDelay + TIME_DELAY <= delay) {
-        if (delta == DELTA_DOWN) {
+
+      if (delta == deltaDown) {
+        if (previousDelayDown + timeDelayDown <= delay) {
           /* send the command and restore the volume */
           if (sendKeyEvent(KeyEvent.KEYCODE_MEDIA_PREVIOUS))
             audio.setStreamVolume(AudioManager.STREAM_MUSIC, previousVolume, 0);
-        } else if (delta == DELTA_UP) {
+        }
+      } else if (delta == deltaUp) {
+        if (previousDelayUp + timeDelayUp <= delay) {
           /* send the command and restore the volume */
           if (sendKeyEvent(KeyEvent.KEYCODE_MEDIA_NEXT))
             audio.setStreamVolume(AudioManager.STREAM_MUSIC, previousVolume, 0);
         }
       }
       /* save the new states */
-      previousDelay = delay;
+      previousDelayUp = delay;
+      previousDelayDown = delay;
       previousVolume = currentVolume;
     }
     return START_STICKY;

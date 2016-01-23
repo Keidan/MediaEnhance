@@ -27,7 +27,7 @@ public class RestartServiceReceiver extends BroadcastReceiver {
   
   @Override
   public void onReceive(final Context context, final Intent intent) {
-    final Intent service = new Intent(context, MediaEnhance.class);
+    final Intent service = new Intent(context, MediaEnhanceService.class);
     context.startService(service);
   }
 }

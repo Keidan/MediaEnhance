@@ -31,7 +31,7 @@ public class SettingsContentObserver extends ContentObserver {
   @Override
   public void onChange(final boolean selfChange) {
     super.onChange(selfChange);
-    final Intent i = new Intent(context, MediaEnhance.class);
+    final Intent i = new Intent(context, MediaEnhanceService.class);
     i.putExtra(MEDIA_ACTION_KEY, 0);
     context.startService(i);
   }

@@ -1,0 +1,3 @@
+<resources>
+    <attr name="labelTextColor" format="reference|color" />
+</resources>
