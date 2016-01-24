@@ -2,10 +2,7 @@ package org.kei.android.phone.mediaenhance;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -50,15 +47,12 @@ public class MediaEnhanceActivity extends Activity implements OnClickListener {
     btApply = (Button)findViewById(R.id.btApply);
     toggleOnOff = (ToggleButton)findViewById(R.id.toggleOnOff);
     
-    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-    etDelayUp.setText(String.valueOf(
-        prefs.getLong(MediaEnhanceService.KEY_TIME_DELAY_UP, MediaEnhanceService.DEFAULT_TIME_DELAY)));
-    etDelayDown.setText(String.valueOf(
-        prefs.getLong(MediaEnhanceService.KEY_TIME_DELAY_DOWN, MediaEnhanceService.DEFAULT_TIME_DELAY)));
-    etNbUp.setText(String.valueOf(
-        prefs.getInt(MediaEnhanceService.KEY_DELTA_UP, MediaEnhanceService.DEFAULT_DELTA)));
-    etNbDown.setText(String.valueOf(
-        prefs.getInt(MediaEnhanceService.KEY_DELTA_DOWN, MediaEnhanceService.DEFAULT_DELTA)));
+    MediaEnhanceApp app = ((MediaEnhanceApp)getApplication());
+    app.loadConfig();
+    etDelayUp.setText(String.valueOf(app.getTimeDelayUp()));
+    etDelayDown.setText(String.valueOf(app.getTimeDelayDown()));
+    etNbUp.setText(String.valueOf(app.getDeltaUp()));
+    etNbDown.setText(String.valueOf(app.getDeltaDown()));
     if(Tools.isServiceRunning(this, MediaEnhanceService.class))
       toggleOnOff.setChecked(true);
     //startService(new Intent(this, MediaEnhanceService.class));
@@ -71,51 +65,41 @@ public class MediaEnhanceActivity extends Activity implements OnClickListener {
   @Override
   public void onClick(View v) {
     if(v.equals(btApply)) {
-      SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-      Editor e = prefs.edit();
-      addLong(e, MediaEnhanceService.KEY_TIME_DELAY_UP, 
-          etDelayUp.getText().toString(), MediaEnhanceService.DEFAULT_TIME_DELAY);
-      addLong(e, MediaEnhanceService.KEY_TIME_DELAY_DOWN, 
-          etDelayDown.getText().toString(), MediaEnhanceService.DEFAULT_TIME_DELAY);
-      addInt(e, MediaEnhanceService.KEY_DELTA_UP, 
-          etNbUp.getText().toString(), MediaEnhanceService.DEFAULT_DELTA);
-      addInt(e, MediaEnhanceService.KEY_DELTA_DOWN, 
-          etNbDown.getText().toString(), MediaEnhanceService.DEFAULT_DELTA);
-      e.commit();
-      Intent i = new Intent(this, MediaEnhanceService.class);
-      i.setAction(MediaEnhanceService.ACTION_APPLY);
-      startService(i);
+      MediaEnhanceApp app = ((MediaEnhanceApp)getApplication());
+      app.setDeltaDown(getInt(etNbDown.getText().toString(), MediaEnhanceApp.DEFAULT_DELTA));
+      app.setDeltaUp(getInt(etNbUp.getText().toString(), MediaEnhanceApp.DEFAULT_DELTA));
+      app.setTimeDelayDown(getLong(etDelayDown.getText().toString(), MediaEnhanceApp.DEFAULT_TIME_DELAY));
+      app.setTimeDelayUp(getLong(etDelayUp.getText().toString(), MediaEnhanceApp.DEFAULT_TIME_DELAY));
+      app.saveConfig();
       if(!toggleOnOff.isChecked() && Tools.isServiceRunning(this, MediaEnhanceService.class)) toggleOnOff.setChecked(true);
     } else if(v.equals(toggleOnOff)) {
       if(!toggleOnOff.isChecked()) {
-        Intent i = new Intent(this, MediaEnhanceService.class);
-        i.setAction(MediaEnhanceService.ACTION_SENPUKU);
-        stopService(i);
+        ((MediaEnhanceApp)getApplication()).setSenpuku(true);
+        stopService(new Intent(this, MediaEnhanceService.class));
       } else {
+        ((MediaEnhanceApp)getApplication()).setSenpuku(false);
         startService(new Intent(this, MediaEnhanceService.class));
       }
     }
   }
   
-  private void addLong(final Editor e, final String key, final String val, final long def) {
+  private long getLong(final String val, final long def) {
     long l = def;
     try {
       l = Long.parseLong(val);
     } catch(Exception ex) {
       l = def;
-    } finally {
-      e.putLong(key, l);
     }
+    return l;
   }
   
-  private void addInt(final Editor e, final String key, final String val, final int def) {
+  private int getInt(final String val, final int def) {
     int l = def;
     try {
       l = Integer.parseInt(val);
     } catch(Exception ex) {
       l = def;
-    } finally {
-      e.putInt(key, l);
     }
+    return l;
   }
 }
