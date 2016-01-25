@@ -1,4 +1,6 @@
-package org.kei.android.phone.mediaenhance;
+package org.kei.android.phone.mediaenhance.receivers;
+
+import org.kei.android.phone.mediaenhance.MediaEnhanceService;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

@@ -1,5 +1,10 @@
 package org.kei.android.phone.mediaenhance;
 
+import org.kei.android.phone.mediaenhance.receivers.RestartServiceReceiver;
+import org.kei.android.phone.mediaenhance.receivers.ScreenReceiver;
+import org.kei.android.phone.mediaenhance.receivers.SettingsContentObserver;
+import org.kei.android.phone.mediaenhance.receivers.VolumeChangeReceiver;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +16,6 @@ import android.media.RemoteController.OnClientUpdateListener;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
-import android.view.KeyEvent;
 
 /**
  *******************************************************************************
@@ -34,48 +38,55 @@ import android.view.KeyEvent;
  */
 
 @SuppressWarnings("deprecation")
-public class MediaEnhanceService extends Service implements OnClientUpdateListener{
+public class MediaEnhanceService extends Service implements
+    OnClientUpdateListener {
   private ScreenReceiver          mScreenReceiver          = null;
   private SettingsContentObserver mSettingsContentObserver = null;
   private boolean                 screenOff                = false;
-  private long                    previousDelayUp          = 0;
-  private long                    previousDelayDown        = 0;
-  private int                     previousVolume           = 0;
   private RemoteController        mRemoteController        = null;
   private boolean                 createError              = false;
   private MediaEnhanceApp         app                      = null;
+  private boolean                 started                  = false;
+  private VolumeChangeReceiver    volumeChangeReceiver     = null;
+  private VolumeFactory factory = null;
   
   @Override
   public void onCreate() {
     super.onCreate();
-    app = ((MediaEnhanceApp)getApplication());
+    app = ((MediaEnhanceApp) getApplication());
     app.loadConfig();
+    started = false;
     // register receiver that handles screen on and screen off logic
     final IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
     filter.addAction(Intent.ACTION_SCREEN_OFF);
     mScreenReceiver = new ScreenReceiver();
     registerReceiver(mScreenReceiver, filter);
-    
-    mSettingsContentObserver = new SettingsContentObserver(this, new Handler());
-    getApplicationContext().getContentResolver().registerContentObserver(
-        android.provider.Settings.System.CONTENT_URI, true,
-        mSettingsContentObserver);
-    
-    final AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-    previousVolume = audio.getStreamVolume(AudioManager.STREAM_MUSIC);
-    mRemoteController = new RemoteController(this, this);
-    previousDelayUp = System.currentTimeMillis();
-    previousDelayDown = System.currentTimeMillis();
+
+    if (app.getVolumeMethod().equals(MediaEnhanceApp.VOLUME_METHOD_SETTINGS)) {
+      mSettingsContentObserver = new SettingsContentObserver(this,
+          new Handler());
+      getApplicationContext().getContentResolver().registerContentObserver(
+          android.provider.Settings.System.CONTENT_URI, true,
+          mSettingsContentObserver);
+    } else {
+      final IntentFilter ii = new IntentFilter(VolumeChangeReceiver.VOLUME_CHANGED_ACTION);
+      volumeChangeReceiver = new VolumeChangeReceiver();
+      registerReceiver(volumeChangeReceiver, ii);
+    }
     try {
+      final AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+      mRemoteController = new RemoteController(this, this);
       audio.registerRemoteController(mRemoteController);
-    } catch(Exception e) {
+    } catch (final Exception e) {
       createError = true;
     }
+    factory = new VolumeFactory(this, app, mRemoteController);
   }
 
   @Override
   public void onDestroy() {
     Log.i(getClass().getSimpleName(), "onDestroy.");
+    started = false;
     Tools.toast(this, getResources().getString(R.string.toast_stopped));
     if (mScreenReceiver != null) {
       unregisterReceiver(mScreenReceiver);
@@ -91,7 +102,11 @@ public class MediaEnhanceService extends Service implements OnClientUpdateListen
       audio.unregisterRemoteController(mRemoteController);
       mRemoteController = null;
     }
-    if(!app.isSenpuku() && !createError) {
+    if (volumeChangeReceiver != null) {
+      unregisterReceiver(volumeChangeReceiver);
+      volumeChangeReceiver = null;
+    }
+    if (!app.isSenpuku() && !createError) {
       Log.i(getClass().getSimpleName(), "Restart service.");
       /* restart the activity */
       final Intent intent = new Intent(this, RestartServiceReceiver.class);
@@ -101,56 +116,34 @@ public class MediaEnhanceService extends Service implements OnClientUpdateListen
     super.onDestroy();
   }
 
-
   @Override
   public int onStartCommand(final Intent intent, final int flags,
       final int startId) {
+    String volumeMethod = app.getVolumeMethod();
     boolean volumeUpdate = false;
     app.loadConfig();
-    boolean realStart = false;
     if (intent != null) {
       if (intent.hasExtra(ScreenReceiver.SCREEN_STATE_KEY))
         screenOff = intent.getBooleanExtra(ScreenReceiver.SCREEN_STATE_KEY,
             !Tools.isScreenOn(this));
-      else if (intent.hasExtra(SettingsContentObserver.MEDIA_ACTION_KEY))
+      else if (intent.hasExtra(MediaEnhanceApp.MEDIA_ACTION_KEY)) {
+        volumeMethod = intent.getStringExtra(MediaEnhanceApp.MEDIA_ACTION_KEY);
         volumeUpdate = true;
-      else
-        realStart = true;
-    } else
-      realStart = true;
+      }
+    }
     if (createError)
       Tools.toast(this, getResources().getString(R.string.toast_permission));
-    else if (realStart)
+    else if (!started) {
       Tools.toast(this, getResources().getString(R.string.toast_started));
+      started = true;
+    }
     screenOff = !Tools.isScreenOn(this);
     Log.i(getClass().getSimpleName(), "Service started with i:" + intent
         + ", id:" + startId + ", screen off:" + screenOff + ", volumeUpdate:"
-        + volumeUpdate);
+        + volumeUpdate + ", volumeMethod:" + volumeMethod + ", echo:" + factory.isEcho());
 
     if (screenOff && volumeUpdate) {
-      final AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-      final int currentVolume = audio
-          .getStreamVolume(AudioManager.STREAM_MUSIC);
-      final int delta = previousVolume - currentVolume;
-      final long delay = System.currentTimeMillis();
-
-      if (delta == app.getDeltaDown()) {
-        if (previousDelayDown + app.getTimeDelayDown() <= delay) {
-          /* send the command and restore the volume */
-          if (sendKeyEvent(KeyEvent.KEYCODE_MEDIA_PREVIOUS))
-            audio.setStreamVolume(AudioManager.STREAM_MUSIC, previousVolume, 0);
-        }
-      } else if (delta == (-app.getDeltaUp())) {
-        if (previousDelayUp + app.getTimeDelayUp() <= delay) {
-          /* send the command and restore the volume */
-          if (sendKeyEvent(KeyEvent.KEYCODE_MEDIA_NEXT))
-            audio.setStreamVolume(AudioManager.STREAM_MUSIC, previousVolume, 0);
-        }
-      }
-      /* save the new states */
-      previousDelayUp = delay;
-      previousDelayDown = delay;
-      previousVolume = currentVolume;
+      factory.apply(volumeMethod, intent);
     }
     return START_STICKY;
 
@@ -161,28 +154,24 @@ public class MediaEnhanceService extends Service implements OnClientUpdateListen
     return null;
   }
 
-  private boolean sendKeyEvent(final int keyCode) {
-    // send "down" and "up" keyevents.
-    KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_DOWN, keyCode);
-    final boolean first = mRemoteController.sendMediaKeyEvent(keyEvent);
-    keyEvent = new KeyEvent(KeyEvent.ACTION_UP, keyCode);
-    final boolean second = mRemoteController.sendMediaKeyEvent(keyEvent);
-    return first && second; // if both clicks were delivered successfully
+  @Override
+  public void onClientChange(final boolean clearing) {
   }
 
   @Override
-  public void onClientChange(boolean clearing) { }
+  public void onClientPlaybackStateUpdate(final int state) {
+  }
 
   @Override
-  public void onClientPlaybackStateUpdate(int state) { }
+  public void onClientPlaybackStateUpdate(final int state,
+      final long stateChangeTimeMs, final long currentPosMs, final float speed) {
+  }
 
   @Override
-  public void onClientPlaybackStateUpdate(int state, long stateChangeTimeMs,
-      long currentPosMs, float speed) { }
+  public void onClientTransportControlUpdate(final int transportControlFlags) {
+  }
 
   @Override
-  public void onClientTransportControlUpdate(int transportControlFlags) { }
-
-  @Override
-  public void onClientMetadataUpdate(MetadataEditor metadataEditor) { }
+  public void onClientMetadataUpdate(final MetadataEditor metadataEditor) {
+  }
 }

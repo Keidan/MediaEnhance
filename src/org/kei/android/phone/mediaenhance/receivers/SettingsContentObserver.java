@@ -1,4 +1,7 @@
-package org.kei.android.phone.mediaenhance;
+package org.kei.android.phone.mediaenhance.receivers;
+
+import org.kei.android.phone.mediaenhance.MediaEnhanceApp;
+import org.kei.android.phone.mediaenhance.MediaEnhanceService;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +18,6 @@ import android.os.Handler;
  *******************************************************************************
  */
 public class SettingsContentObserver extends ContentObserver {
-  public static final String MEDIA_ACTION_KEY = "media_volume";
   private Context            context          = null;
   
   public SettingsContentObserver(final Context c, final Handler handler) {
@@ -32,7 +34,7 @@ public class SettingsContentObserver extends ContentObserver {
   public void onChange(final boolean selfChange) {
     super.onChange(selfChange);
     final Intent i = new Intent(context, MediaEnhanceService.class);
-    i.putExtra(MEDIA_ACTION_KEY, 0);
+    i.putExtra(MediaEnhanceApp.MEDIA_ACTION_KEY, MediaEnhanceApp.VOLUME_METHOD_SETTINGS);
     context.startService(i);
   }
 }

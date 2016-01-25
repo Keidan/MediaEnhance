@@ -25,18 +25,22 @@ import android.preference.PreferenceManager;
  *******************************************************************************
  */
 public class MediaEnhanceApp extends Application {
-  public static final String      KEY_TIME_DELAY_UP        = "timeDelayUp";
-  public static final String      KEY_TIME_DELAY_DOWN      = "timeDelayDown";
-  public static final String      KEY_DELTA_DOWN           = "deltaDown";
-  public static final String      KEY_DELTA_UP             = "deltaUp";
-  public static final int         DEFAULT_TIME_DELAY       = 500;
-  public static final int         DEFAULT_DELTA            = 2;
-  private long                    timeDelayUp              = DEFAULT_TIME_DELAY;
-  private long                    timeDelayDown            = DEFAULT_TIME_DELAY;
-  private int                     deltaUp                  = DEFAULT_DELTA;
-  private int                     deltaDown                = DEFAULT_DELTA;
-  private boolean                 senpuku                  = false;
-  
+  public static final String MEDIA_ACTION_KEY       = "media_volume";
+  public static final String VOLUME_METHOD_HIDDEN   = "Hidden";
+  public static final String VOLUME_METHOD_SETTINGS = "Settings";
+  public static final String KEY_VOLUME_METHOD      = "volumeMethod";
+  public static final String KEY_TIME_DELAY_UP      = "timeDelayUp";
+  public static final String KEY_TIME_DELAY_DOWN    = "timeDelayDown";
+  public static final String KEY_DELTA_DOWN         = "deltaDown";
+  public static final String KEY_DELTA_UP           = "deltaUp";
+  public static final int    DEFAULT_TIME_DELAY     = 500;
+  public static final int    DEFAULT_DELTA          = 2;
+  private long               timeDelayUp            = DEFAULT_TIME_DELAY;
+  private long               timeDelayDown          = DEFAULT_TIME_DELAY;
+  private int                deltaUp                = DEFAULT_DELTA;
+  private int                deltaDown              = DEFAULT_DELTA;
+  private boolean            senpuku                = false;
+  private String             volumeMethod           = VOLUME_METHOD_HIDDEN;
   
   
 
@@ -46,6 +50,7 @@ public class MediaEnhanceApp extends Application {
     timeDelayDown = prefs.getLong(KEY_TIME_DELAY_DOWN, DEFAULT_TIME_DELAY);
     deltaUp = prefs.getInt(KEY_DELTA_UP, DEFAULT_DELTA);
     deltaDown = prefs.getInt(KEY_DELTA_DOWN, DEFAULT_DELTA);
+    volumeMethod = prefs.getString(KEY_VOLUME_METHOD, VOLUME_METHOD_HIDDEN);
   }
   
   public void saveConfig() {
@@ -55,6 +60,7 @@ public class MediaEnhanceApp extends Application {
     e.putLong(KEY_TIME_DELAY_DOWN, timeDelayDown);
     e.putInt(KEY_DELTA_UP, deltaUp);
     e.putInt(KEY_DELTA_DOWN, deltaDown);
+    e.putString(KEY_VOLUME_METHOD, volumeMethod);
     e.commit();
   }
 
@@ -112,6 +118,20 @@ public class MediaEnhanceApp extends Application {
    */
   public void setDeltaDown(int deltaDown) {
     this.deltaDown = deltaDown;
+  }
+
+  /**
+   * @return the volumeMethod
+   */
+  public String getVolumeMethod() {
+    return volumeMethod;
+  }
+
+  /**
+   * @param volumeMethod the volumeMethod to set
+   */
+  public void setVolumeMethod(String volumeMethod) {
+    this.volumeMethod = volumeMethod;
   }
 
   /**

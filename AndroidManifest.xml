@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.kei.android.phone.mediaenhance"
-    android:versionCode="3"
-    android:versionName="1.3" >
+    android:versionCode="4"
+    android:versionName="1.4" >
 
     <uses-sdk
         android:minSdkVersion="19"
@@ -39,7 +39,7 @@
         </service>
 
         <receiver
-            android:name=".RestartServiceReceiver"
+            android:name="org.kei.android.phone.mediaenhance.receivers.RestartServiceReceiver"
             android:enabled="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED" >
             <intent-filter>
@@ -48,6 +48,7 @@
                 <action android:name="org.kei.android.phone.mediaenhance.RESTART" />
             </intent-filter>
         </receiver>
+        
     </application>
 
 </manifest>
