@@ -3,6 +3,8 @@ package org.kei.android.phone.mediaenhance;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kei.android.atk.utils.Tools;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;

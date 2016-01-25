@@ -1,5 +1,6 @@
 package org.kei.android.phone.mediaenhance;
 
+import org.kei.android.atk.utils.Tools;
 import org.kei.android.phone.mediaenhance.receivers.RestartServiceReceiver;
 import org.kei.android.phone.mediaenhance.receivers.ScreenReceiver;
 import org.kei.android.phone.mediaenhance.receivers.SettingsContentObserver;
@@ -87,7 +88,7 @@ public class MediaEnhanceService extends Service implements
   public void onDestroy() {
     Log.i(getClass().getSimpleName(), "onDestroy.");
     started = false;
-    Tools.toast(this, getResources().getString(R.string.toast_stopped));
+    Tools.toast(this, R.drawable.ic_launcher, getResources().getString(R.string.toast_stopped));
     if (mScreenReceiver != null) {
       unregisterReceiver(mScreenReceiver);
       mScreenReceiver = null;
@@ -132,9 +133,9 @@ public class MediaEnhanceService extends Service implements
       }
     }
     if (createError)
-      Tools.toast(this, getResources().getString(R.string.toast_permission));
+      Tools.toast(this, R.drawable.ic_launcher, getResources().getString(R.string.toast_permission));
     else if (!started) {
-      Tools.toast(this, getResources().getString(R.string.toast_started));
+      Tools.toast(this, R.drawable.ic_launcher, getResources().getString(R.string.toast_started));
       started = true;
     }
     screenOff = !Tools.isScreenOn(this);
