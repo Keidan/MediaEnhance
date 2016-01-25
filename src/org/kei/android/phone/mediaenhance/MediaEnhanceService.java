@@ -107,21 +107,26 @@ public class MediaEnhanceService extends Service implements OnClientUpdateListen
       final int startId) {
     boolean volumeUpdate = false;
     app.loadConfig();
+    boolean realStart = false;
     if (intent != null) {
       if (intent.hasExtra(ScreenReceiver.SCREEN_STATE_KEY))
         screenOff = intent.getBooleanExtra(ScreenReceiver.SCREEN_STATE_KEY,
             !Tools.isScreenOn(this));
       else if (intent.hasExtra(SettingsContentObserver.MEDIA_ACTION_KEY))
         volumeUpdate = true;
-    }
-    if(createError)
+      else
+        realStart = true;
+    } else
+      realStart = true;
+    if (createError)
       Tools.toast(this, getResources().getString(R.string.toast_permission));
-    else
+    else if (realStart)
       Tools.toast(this, getResources().getString(R.string.toast_started));
     screenOff = !Tools.isScreenOn(this);
-     Log.i(getClass().getSimpleName(), "Service started with i:" + intent +
-     ", id:" + startId + ", screen off:" + screenOff + ", " + volumeUpdate);
-     
+    Log.i(getClass().getSimpleName(), "Service started with i:" + intent
+        + ", id:" + startId + ", screen off:" + screenOff + ", volumeUpdate:"
+        + volumeUpdate);
+
     if (screenOff && volumeUpdate) {
       final AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
       final int currentVolume = audio
