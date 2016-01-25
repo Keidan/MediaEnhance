@@ -49,7 +49,7 @@ public class MediaEnhanceService extends Service implements
   private MediaEnhanceApp         app                      = null;
   private boolean                 started                  = false;
   private VolumeChangeReceiver    volumeChangeReceiver     = null;
-  private VolumeFactory factory = null;
+  private VolumeFactory           factory                  = null;
   
   @Override
   public void onCreate() {
