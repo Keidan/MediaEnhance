@@ -94,13 +94,36 @@
             android:inputType="number"
             android:labelFor="@+id/etNbDown" >
         </EditText>
-
+        
         <TextView
-            android:id="@+id/tvMethod"
+            android:id="@+id/tvDisplayToast"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="0"
             android:layout_row="4"
+            android:text="@string/tvDisplayToast"
+            android:textColor="?attr/labelTextColor" />
+
+        <CheckBox
+            android:id="@+id/chkDisplayToast"
+            android:layout_marginTop="5sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_gravity="fill_horizontal"
+            android:layout_row="4"
+            android:button="@null"
+            android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
+            android:text="@string/empty"
+            android:textColor="?attr/labelTextColor" />
+
+        <TextView
+            android:id="@+id/tvMethod"
+            android:layout_marginTop="5sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="5"
             android:text="@string/tvMethod"
             android:textColor="?attr/labelTextColor" />
 
@@ -110,7 +133,7 @@
             android:layout_height="wrap_content"
             android:layout_column="1"
             android:layout_gravity="fill_horizontal"
-            android:layout_row="4"
+            android:layout_row="5"
             android:padding="0dip" />
 
         <TextView
@@ -120,7 +143,7 @@
             android:layout_column="0"
             android:layout_columnSpan="2"
             android:layout_marginTop="10sp"
-            android:layout_row="5"
+            android:layout_row="6"
             android:text="@string/empty"
             android:textColor="#FFFFC466"
             android:textSize="12sp"
@@ -133,7 +156,7 @@
             android:layout_column="0"
             android:layout_columnSpan="2"
             android:layout_marginTop="10sp"
-            android:layout_row="6"
+            android:layout_row="8"
             android:text="@string/lblWarning"
             android:textColor="#FFE26600"
             android:textSize="12sp"
@@ -146,7 +169,7 @@
             android:layout_column="0"
             android:layout_columnSpan="2"
             android:layout_marginTop="50sp"
-            android:layout_row="7"
+            android:layout_row="9"
             android:text="@string/btApply" />
 
         <ToggleButton
@@ -156,7 +179,7 @@
             android:layout_column="0"
             android:layout_columnSpan="2"
             android:layout_marginTop="15sp"
-            android:layout_row="8"
+            android:layout_row="10"
             android:textOff="@string/toggleOn"
             android:textOn="@string/toggleOff" />
     </GridLayout>

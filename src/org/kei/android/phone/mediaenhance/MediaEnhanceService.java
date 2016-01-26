@@ -88,7 +88,8 @@ public class MediaEnhanceService extends Service implements
   public void onDestroy() {
     Log.i(getClass().getSimpleName(), "onDestroy.");
     started = false;
-    Tools.toast(this, R.drawable.ic_launcher, getResources().getString(R.string.toast_stopped));
+    if(app.isDisplayToast())
+      Tools.toast(this, R.drawable.ic_launcher, getResources().getString(R.string.toast_stopped));
     if (mScreenReceiver != null) {
       unregisterReceiver(mScreenReceiver);
       mScreenReceiver = null;
@@ -134,7 +135,7 @@ public class MediaEnhanceService extends Service implements
     }
     if (createError)
       Tools.toast(this, R.drawable.ic_launcher, getResources().getString(R.string.toast_permission));
-    else if (!started) {
+    else if (!started && app.isDisplayToast()) {
       Tools.toast(this, R.drawable.ic_launcher, getResources().getString(R.string.toast_started));
       started = true;
     }

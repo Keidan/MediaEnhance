@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -49,6 +50,7 @@ public class MediaEnhanceActivity extends Activity implements OnClickListener, O
   private TextView     tvNbUp                = null;
   private TextView     tvNbDown              = null;
   private Spinner      spMethod              = null;
+  private CheckBox     chkDisplayToast       = null;
   private Button       btApply               = null;
   private ToggleButton toggleOnOff           = null;
   private String       warningMethodSettings = null;
@@ -73,6 +75,7 @@ public class MediaEnhanceActivity extends Activity implements OnClickListener, O
     tvNbUp = (TextView)findViewById(R.id.tvNbUp);
     tvNbDown = (TextView)findViewById(R.id.tvNbDown);
     spMethod = (Spinner)findViewById(R.id.spMethod);
+    chkDisplayToast = (CheckBox)findViewById(R.id.chkDisplayToast);
     btApply = (Button)findViewById(R.id.btApply);
     toggleOnOff = (ToggleButton)findViewById(R.id.toggleOnOff);
     
@@ -82,8 +85,8 @@ public class MediaEnhanceActivity extends Activity implements OnClickListener, O
     etDelayDown.setText(String.valueOf(app.getTimeDelayDown()));
     etNbUp.setText(String.valueOf(app.getDeltaUp()));
     etNbDown.setText(String.valueOf(app.getDeltaDown()));
-    if(Tools.isServiceRunning(this, MediaEnhanceService.class))
-      toggleOnOff.setChecked(true);
+    toggleOnOff.setChecked(Tools.isServiceRunning(this, MediaEnhanceService.class));
+    chkDisplayToast.setChecked(app.isDisplayToast());
  
     final List<String> list = new ArrayList<String>();
     list.add(MediaEnhanceApp.VOLUME_METHOD_HIDDEN);
@@ -133,6 +136,7 @@ public class MediaEnhanceActivity extends Activity implements OnClickListener, O
     app.setTimeDelayDown(getLong(etDelayDown.getText().toString(), MediaEnhanceApp.DEFAULT_TIME_DELAY));
     app.setTimeDelayUp(getLong(etDelayUp.getText().toString(), MediaEnhanceApp.DEFAULT_TIME_DELAY));
     app.setVolumeMethod(""+spMethod.getSelectedItem());
+    app.setDisplayToast(chkDisplayToast.isChecked());
     app.saveConfig();
   }
 

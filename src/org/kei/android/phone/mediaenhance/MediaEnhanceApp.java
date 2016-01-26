@@ -33,6 +33,7 @@ public class MediaEnhanceApp extends Application {
   public static final String KEY_TIME_DELAY_DOWN    = "timeDelayDown";
   public static final String KEY_DELTA_DOWN         = "deltaDown";
   public static final String KEY_DELTA_UP           = "deltaUp";
+  public static final String KEY_DISPLAY_TOAST      = "displayToast";
   public static final int    DEFAULT_TIME_DELAY     = 250;
   public static final int    DEFAULT_DELTA          = 2;
   private long               timeDelayUp            = DEFAULT_TIME_DELAY;
@@ -40,6 +41,7 @@ public class MediaEnhanceApp extends Application {
   private int                deltaUp                = DEFAULT_DELTA;
   private int                deltaDown              = DEFAULT_DELTA;
   private boolean            senpuku                = false;
+  private boolean            displayToast           = false;
   private String             volumeMethod           = VOLUME_METHOD_HIDDEN;
   
   
@@ -51,6 +53,7 @@ public class MediaEnhanceApp extends Application {
     deltaUp = prefs.getInt(KEY_DELTA_UP, DEFAULT_DELTA);
     deltaDown = prefs.getInt(KEY_DELTA_DOWN, DEFAULT_DELTA);
     volumeMethod = prefs.getString(KEY_VOLUME_METHOD, VOLUME_METHOD_HIDDEN);
+    displayToast = prefs.getBoolean(KEY_DISPLAY_TOAST, false);
   }
   
   public void saveConfig() {
@@ -61,6 +64,7 @@ public class MediaEnhanceApp extends Application {
     e.putInt(KEY_DELTA_UP, deltaUp);
     e.putInt(KEY_DELTA_DOWN, deltaDown);
     e.putString(KEY_VOLUME_METHOD, volumeMethod);
+    e.putBoolean(KEY_DISPLAY_TOAST, displayToast);
     e.commit();
   }
 
@@ -148,4 +152,17 @@ public class MediaEnhanceApp extends Application {
     this.senpuku = senpuku;
   }
 
+  /**
+   * @return the displayToast
+   */
+  public boolean isDisplayToast() {
+    return displayToast;
+  }
+
+  /**
+   * @param displayToast the displayToast to set
+   */
+  public void setDisplayToast(boolean displayToast) {
+    this.displayToast = displayToast;
+  }
 }
