@@ -84,7 +84,7 @@ public class VolumeFactory {
         /* send the command and restore the volume */
         if (sendKeyEvent(KeyEvent.KEYCODE_MEDIA_PREVIOUS)) {
           //Log.i(getClass().getSimpleName(), "manageVolumeHidden -> update volume with value:" + currentVolume);
-          audio.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0);
+          audio.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume + app.getDeltaDown(), 0);
         }
       }
     } else if (delta == (-app.getDeltaUp())) {
@@ -97,7 +97,7 @@ public class VolumeFactory {
         /* send the command and restore the volume */
         if (sendKeyEvent(KeyEvent.KEYCODE_MEDIA_NEXT)) {
           //Log.i(getClass().getSimpleName(), "manageVolumeHidden -> update volume with value:" + previousVolume);
-          audio.setStreamVolume(AudioManager.STREAM_MUSIC, previousVolume, 0);
+          audio.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume - app.getDeltaUp(), 0);
         }
       }
     }
@@ -123,7 +123,7 @@ public class VolumeFactory {
         /* send the command and restore the volume */
         if (sendKeyEvent(KeyEvent.KEYCODE_MEDIA_PREVIOUS)) {
           //Log.i(getClass().getSimpleName(), "manageVolumeHidden -> update volume with value:" + currentVolume);
-          audio.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0);
+          audio.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume + 2, 0);
         }
       }
     } else if (delta <= (-1)
@@ -139,7 +139,7 @@ public class VolumeFactory {
         /* send the command and restore the volume */
         if (sendKeyEvent(KeyEvent.KEYCODE_MEDIA_NEXT)) {
           //Log.i(getClass().getSimpleName(), "manageVolumeHidden -> update volume with value:" + previousVolume);
-          audio.setStreamVolume(AudioManager.STREAM_MUSIC, previousVolume, 0);
+          audio.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume - 2, 0);
         }
       }
     }
