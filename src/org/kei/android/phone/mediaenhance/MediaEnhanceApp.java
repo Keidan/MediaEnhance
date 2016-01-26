@@ -33,7 +33,7 @@ public class MediaEnhanceApp extends Application {
   public static final String KEY_TIME_DELAY_DOWN    = "timeDelayDown";
   public static final String KEY_DELTA_DOWN         = "deltaDown";
   public static final String KEY_DELTA_UP           = "deltaUp";
-  public static final int    DEFAULT_TIME_DELAY     = 500;
+  public static final int    DEFAULT_TIME_DELAY     = 250;
   public static final int    DEFAULT_DELTA          = 2;
   private long               timeDelayUp            = DEFAULT_TIME_DELAY;
   private long               timeDelayDown          = DEFAULT_TIME_DELAY;
