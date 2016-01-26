@@ -17,4 +17,13 @@
     <string name="lblWarning">Make sure the application can access to the notifications:\nGo to Settings -> Sound &amp; Notification -> Notification access -> Select checkbox next to this app.</string>
     <string name="warningMethodSettings">This method use the settings for the detection and it cannot detect the changes if the volume equals 0 or the maximum value.</string>
     <string name="warningMethodHidden">This method use the hidden API for the detection and it can not be available on your Android version.</string>
+    
+    
+    
+    <string name="action_changelog">Changelog</string>
+    <string name="changelog_full_title">Change Log</string>
+    <string name="changelog_title">What\'s New</string>
+    <string name="changelog_ok_button">OK</string>
+    <string name="changelog_show_full">more&#8230;</string>
+    <string name="background_color">black</string>
 </resources>

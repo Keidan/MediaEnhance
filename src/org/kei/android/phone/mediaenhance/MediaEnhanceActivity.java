@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kei.android.atk.utils.Tools;
+import org.kei.android.atk.utils.changelog.ChangeLog;
+import org.kei.android.atk.utils.changelog.ChangeLogIds;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -55,6 +59,8 @@ public class MediaEnhanceActivity extends Activity implements OnClickListener, O
   private ToggleButton toggleOnOff           = null;
   private String       warningMethodSettings = null;
   private String       warningMethodHidden   = null;
+  private ChangeLog    changeLog             = null;
+  
   
   @Override
   public void onCreate(final Bundle savedInstanceState) {
@@ -103,6 +109,16 @@ public class MediaEnhanceActivity extends Activity implements OnClickListener, O
     spMethod.setOnItemSelectedListener(this);
     btApply.setOnClickListener(this);
     toggleOnOff.setOnClickListener(this);
+    
+    changeLog = new ChangeLog(new ChangeLogIds(
+            R.raw.changelog, 
+            R.string.changelog_ok_button, 
+            R.string.background_color, 
+            R.string.changelog_title, 
+            R.string.changelog_full_title, 
+            R.string.changelog_show_full), this);
+    if(changeLog.firstRun())
+      changeLog.getLogDialog().show();
   }
   
   private void updateUI(final String method) {
@@ -159,6 +175,22 @@ public class MediaEnhanceActivity extends Activity implements OnClickListener, O
 
   @Override
   public void onNothingSelected(final AdapterView<?> parent) {
+  }
+  
+  @Override
+  public boolean onCreateOptionsMenu(final Menu menu) {
+    getMenuInflater().inflate(R.menu.menu_main, menu);
+    return super.onCreateOptionsMenu(menu);
+  }
+  
+  @Override
+  public boolean onOptionsItemSelected(final MenuItem item) {
+    final int id = item.getItemId();
+    if (id == R.id.action_changelog) {
+      changeLog.getFullLogDialog().show();
+      return true;
+    }
+    return super.onOptionsItemSelected(item);
   }
   
   private long getLong(final String val, final long def) {
