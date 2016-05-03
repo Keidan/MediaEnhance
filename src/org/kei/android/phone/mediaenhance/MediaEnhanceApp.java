@@ -31,13 +31,18 @@ public class MediaEnhanceApp extends Application {
   public static final String KEY_VOLUME_METHOD      = "volumeMethod";
   public static final String KEY_TIME_DELAY_UP      = "timeDelayUp";
   public static final String KEY_TIME_DELAY_DOWN    = "timeDelayDown";
+  public static final String KEY_TIME_MIN_UP        = "timeMinUp";
+  public static final String KEY_TIME_MIN_DOWN      = "timeMinDown";
   public static final String KEY_DELTA_DOWN         = "deltaDown";
   public static final String KEY_DELTA_UP           = "deltaUp";
   public static final String KEY_DISPLAY_TOAST      = "displayToast";
   public static final int    DEFAULT_TIME_DELAY     = 250;
   public static final int    DEFAULT_DELTA          = 2;
+  public static final int    DEFAULT_TIME_MIN       = 50;
   private long               timeDelayUp            = DEFAULT_TIME_DELAY;
   private long               timeDelayDown          = DEFAULT_TIME_DELAY;
+  private long timeMinUp = DEFAULT_TIME_MIN;
+  private long timeMinDown = DEFAULT_TIME_MIN;
   private int                deltaUp                = DEFAULT_DELTA;
   private int                deltaDown              = DEFAULT_DELTA;
   private boolean            senpuku                = false;
@@ -54,6 +59,8 @@ public class MediaEnhanceApp extends Application {
     deltaDown = prefs.getInt(KEY_DELTA_DOWN, DEFAULT_DELTA);
     volumeMethod = prefs.getString(KEY_VOLUME_METHOD, VOLUME_METHOD_HIDDEN);
     displayToast = prefs.getBoolean(KEY_DISPLAY_TOAST, false);
+    timeMinUp = prefs.getLong(KEY_TIME_MIN_UP, DEFAULT_TIME_MIN);
+    timeMinDown = prefs.getLong(KEY_TIME_MIN_DOWN, DEFAULT_TIME_MIN);
   }
   
   public void saveConfig() {
@@ -65,6 +72,8 @@ public class MediaEnhanceApp extends Application {
     e.putInt(KEY_DELTA_DOWN, deltaDown);
     e.putString(KEY_VOLUME_METHOD, volumeMethod);
     e.putBoolean(KEY_DISPLAY_TOAST, displayToast);
+    e.putLong(KEY_TIME_MIN_UP, timeMinUp);
+    e.putLong(KEY_TIME_MIN_DOWN, timeMinDown);
     e.commit();
   }
 
@@ -165,4 +174,33 @@ public class MediaEnhanceApp extends Application {
   public void setDisplayToast(boolean displayToast) {
     this.displayToast = displayToast;
   }
+
+  /**
+   * @return the timeMinUp
+   */
+  public long getTimeMinUp() {
+    return timeMinUp;
+  }
+
+  /**
+   * @param timeMinUp the timeMinUp to set
+   */
+  public void setTimeMinUp(long timeMinUp) {
+    this.timeMinUp = timeMinUp;
+  }
+
+  /**
+   * @return the timeMinDown
+   */
+  public long getTimeMinDown() {
+    return timeMinDown;
+  }
+
+  /**
+   * @param timeMinDown the timeMinDown to set
+   */
+  public void setTimeMinDown(long timeMinDown) {
+    this.timeMinDown = timeMinDown;
+  }
+  
 }

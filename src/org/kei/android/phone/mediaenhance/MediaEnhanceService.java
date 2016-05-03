@@ -80,6 +80,7 @@ public class MediaEnhanceService extends Service implements
       audio.registerRemoteController(mRemoteController);
     } catch (final Exception e) {
       createError = true;
+      Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
     }
     factory = new VolumeFactory(this, app, mRemoteController);
   }

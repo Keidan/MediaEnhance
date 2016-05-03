@@ -48,6 +48,8 @@ import android.widget.AdapterView.OnItemSelectedListener;
 public class MediaEnhanceActivity extends Activity implements OnClickListener, OnItemSelectedListener {
   private EditText     etDelayUp             = null;
   private EditText     etDelayDown           = null;
+  private EditText     etMinUp               = null;
+  private EditText     etMinDown             = null;
   private EditText     etNbUp                = null;
   private EditText     etNbDown              = null;
   private TextView     lblWarningMethod      = null;
@@ -75,6 +77,8 @@ public class MediaEnhanceActivity extends Activity implements OnClickListener, O
     
     etDelayUp = (EditText)findViewById(R.id.etDelayUp);
     etDelayDown = (EditText)findViewById(R.id.etDelayDown);
+    etMinUp = (EditText)findViewById(R.id.etMinUp);
+    etMinDown = (EditText)findViewById(R.id.etMinDown);
     etNbUp = (EditText)findViewById(R.id.etNbUp);
     etNbDown = (EditText)findViewById(R.id.etNbDown);
     lblWarningMethod = (TextView)findViewById(R.id.lblWarningMethod);
@@ -93,6 +97,8 @@ public class MediaEnhanceActivity extends Activity implements OnClickListener, O
     etNbDown.setText(String.valueOf(app.getDeltaDown()));
     toggleOnOff.setChecked(Tools.isServiceRunning(this, MediaEnhanceService.class));
     chkDisplayToast.setChecked(app.isDisplayToast());
+    etMinUp.setText(String.valueOf(app.getTimeMinUp()));
+    etMinDown.setText(String.valueOf(app.getTimeMinDown()));
  
     final List<String> list = new ArrayList<String>();
     list.add(MediaEnhanceApp.VOLUME_METHOD_HIDDEN);
@@ -153,6 +159,8 @@ public class MediaEnhanceActivity extends Activity implements OnClickListener, O
     app.setTimeDelayUp(getLong(etDelayUp.getText().toString(), MediaEnhanceApp.DEFAULT_TIME_DELAY));
     app.setVolumeMethod(""+spMethod.getSelectedItem());
     app.setDisplayToast(chkDisplayToast.isChecked());
+    app.setTimeMinDown(getLong(etMinDown.getText().toString(), MediaEnhanceApp.DEFAULT_TIME_MIN));
+    app.setTimeMinUp(getLong(etMinUp.getText().toString(), MediaEnhanceApp.DEFAULT_TIME_MIN));
     app.saveConfig();
   }
 

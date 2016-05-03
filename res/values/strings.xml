@@ -7,6 +7,8 @@
     <string name="toast_permission">Media enhance permission error.</string>
     <string name="tvDelayUp">Delay between up (ms): </string>
     <string name="tvDelayDown">Delay between down (ms): </string>
+    <string name="tvMinUp">Min delay between up (ms): </string>
+    <string name="tvMinDown">Min delay between up (ms): </string>
     <string name="tvNbUp">Number of up: </string>
     <string name="tvNbDown">Number of down: </string>
     <string name="tvMethod">Method type: </string>
@@ -17,7 +19,6 @@
     <string name="lblWarning">Make sure the application can access to the notifications:\nGo to Settings -> Sound &amp; Notification -> Notification access -> Select checkbox next to this app.</string>
     <string name="warningMethodSettings">This method use the settings for the detection and it cannot detect the changes if the volume equals 0 or the maximum value.</string>
     <string name="warningMethodHidden">This method use the hidden API for the detection and it can not be available on your Android version.</string>
-    
     
     
     <string name="action_changelog">Changelog</string>
