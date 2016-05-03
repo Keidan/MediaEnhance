@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.RemoteController;
-import android.util.Log;
 import android.view.KeyEvent;
 
 /**
@@ -30,13 +29,13 @@ import android.view.KeyEvent;
  */
 @SuppressWarnings("deprecation")
 public class VolumeFactory {
-  private long             previousDelayUp   = 0;
-  private long             previousDelayDown = 0;
-  private int              previousVolume    = 0;
-  private boolean          echo              = false;
-  private AudioManager     audio             = null;
-  private RemoteController mRemoteController = null;
-  private MediaEnhanceApp  app               = null;
+  private long              previousDelayUp   = 0;
+  private long              previousDelayDown = 0;
+  private int               previousVolume    = 0;
+  private boolean           echo              = false;
+  private AudioManager      audio             = null;
+  private RemoteController  mRemoteController = null;
+  private MediaEnhanceApp   app               = null;
   
   public VolumeFactory(final Context context, final MediaEnhanceApp app, final RemoteController mRemoteController) {
     this.mRemoteController = mRemoteController;
@@ -49,10 +48,10 @@ public class VolumeFactory {
   
   
   public void apply(final String method, final Intent intent) {
+    final long now = System.currentTimeMillis();
     if(echo) {
       echo = false;
     } else {
-      final long now = System.currentTimeMillis();
       if (method.equals(MediaEnhanceApp.VOLUME_METHOD_SETTINGS)) {
         manageVolumeSettings(audio, now);
       } else {
@@ -79,7 +78,7 @@ public class VolumeFactory {
       //Log.i(getClass().getSimpleName(), "manageVolumeSettings -> Volume down (" + app.getTimeDelayDown() + ")");
       //Log.i(getClass().getSimpleName(), "manageVolumeSettings -> previousDelayDown:" + previousDelayDown + ", app.getTimeDelayDown():" + app.getTimeDelayDown() + ", now:" + now);
       //Log.i(getClass().getSimpleName(), "manageVolumeSettings -> real: " +  (previousDelayDown + app.getTimeDelayDown()));
-      if (previousDelayDown + app.getTimeDelayDown() <= now) {
+      if (previousDelayDown + app.getTimeDelayDown() <= now && previousDelayDown + app.getTimeDelayDown() >= app.getTimeMinDown()) {
         //Log.i(getClass().getSimpleName(), "manageVolumeSettings -> Volume down in delay");
         /* send the command and restore the volume */
         if (sendKeyEvent(KeyEvent.KEYCODE_MEDIA_PREVIOUS)) {
@@ -92,7 +91,7 @@ public class VolumeFactory {
       //Log.i(getClass().getSimpleName(), "manageVolumeSettings -> Volume up (" + app.getTimeDelayUp() + ")");
       //Log.i(getClass().getSimpleName(), "manageVolumeSettings -> previousDelayUp:" + previousDelayUp + ", app.getTimeDelayUp():" + app.getTimeDelayUp()+ ", now:" + now);
       //Log.i(getClass().getSimpleName(), "manageVolumeSettings -> real: " +  (previousDelayUp + app.getTimeDelayUp()));
-      if (previousDelayUp + app.getTimeDelayUp() <= now) {
+      if (previousDelayUp + app.getTimeDelayUp() <= now && previousDelayUp + app.getTimeDelayUp() >= app.getTimeMinUp()) {
         //Log.i(getClass().getSimpleName(), "manageVolumeSettings -> Volume up in delay");
         /* send the command and restore the volume */
         if (sendKeyEvent(KeyEvent.KEYCODE_MEDIA_NEXT)) {
@@ -111,14 +110,14 @@ public class VolumeFactory {
   private void manageVolumeHidden(final AudioManager audio, final long now, final int currentVolume) {
     boolean down = false;
     final int delta = previousVolume - currentVolume;
-    Log.i(getClass().getSimpleName(), "manageVolumeHidden -> currentVolume:" + currentVolume + ", previousVolume:"+previousVolume + ", delta:" + delta);
+    //Log.i(getClass().getSimpleName(), "manageVolumeHidden -> currentVolume:" + currentVolume + ", previousVolume:"+previousVolume + ", delta:" + delta);
     if (delta >= 1
         || (previousVolume == 0 && currentVolume == 0)) {
       //Log.i(getClass().getSimpleName(), "manageVolumeHidden -> Volume down (" + app.getTimeDelayDown() + ")");
       //Log.i(getClass().getSimpleName(), "manageVolumeHidden -> previousDelayDown:" + previousDelayDown + ", app.getTimeDelayDown():" + app.getTimeDelayDown() + ", now:" + now);
       //Log.i(getClass().getSimpleName(), "manageVolumeHidden -> real: " +  (now - previousDelayDown));
       down = true;
-      if ((now - previousDelayDown) <= app.getTimeDelayDown()) {
+      if ((now - previousDelayDown) <= app.getTimeDelayDown() && (now - previousDelayDown) >= app.getTimeMinDown()) {
         //Log.i(getClass().getSimpleName(), "manageVolumeHidden -> Volume down in delay");
         /* send the command and restore the volume */
         if (sendKeyEvent(KeyEvent.KEYCODE_MEDIA_PREVIOUS)) {
@@ -134,7 +133,7 @@ public class VolumeFactory {
       //Log.i(getClass().getSimpleName(), "manageVolumeHidden -> previousDelayUp:" + previousDelayUp + ", app.getTimeDelayUp():" + app.getTimeDelayUp()+ ", now:" + now);
       //Log.i(getClass().getSimpleName(), "manageVolumeHidden -> real: " +  (now - previousDelayUp));
       down = false;
-      if ((now - previousDelayUp) <= app.getTimeDelayUp()) {
+      if ((now - previousDelayUp) <= app.getTimeDelayUp() && (now - previousDelayUp) >= app.getTimeMinUp()) {
         //Log.i(getClass().getSimpleName(), "manageVolumeHidden -> Volume up in delay");
         /* send the command and restore the volume */
         if (sendKeyEvent(KeyEvent.KEYCODE_MEDIA_NEXT)) {
