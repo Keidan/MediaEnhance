@@ -1,10 +1,10 @@
 package fr.ralala.mediaenhance;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -32,7 +32,7 @@ import fr.ralala.mediaenhance.utils.HelperUI;
  *
  *******************************************************************************
  */
-public class MediaEnhanceActivity extends Activity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class MediaEnhanceActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
   private EditText mEtDelayUp = null;
   private EditText mEtDelayDown = null;
   private EditText mEtMinUp = null;
@@ -93,7 +93,8 @@ public class MediaEnhanceActivity extends Activity implements View.OnClickListen
     list.add(MediaKeyMethod.HIDDEN);
     list.add(MediaKeyMethod.SETTINGS);
     final ArrayAdapter<MediaKeyMethod> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, list);
-    adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+    //adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
+    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
     mSpMethod.setAdapter(adapter);
     mSpMethod.setSelection(app.getMediaKeyMethod().id());
     updateUI(app.getMediaKeyMethod());

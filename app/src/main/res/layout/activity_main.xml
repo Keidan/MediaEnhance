@@ -16,7 +16,7 @@
         <TableRow>
             <TextView
                 android:id="@+id/tvDelayUp"
-                android:textColor="@color/labelColorBlue"
+                android:textColor="@color/colorAccent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tvDelayUp"/>
@@ -33,7 +33,7 @@
         <TableRow>
             <TextView
                 android:id="@+id/tvDelayDown"
-                android:textColor="@color/labelColorBlue"
+                android:textColor="@color/colorAccent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tvDelayDown"/>
@@ -48,7 +48,7 @@
         <TableRow>
             <TextView
                 android:id="@+id/tvMinUp"
-                android:textColor="@color/labelColorBlue"
+                android:textColor="@color/colorAccent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tvMinUp"/>
@@ -63,7 +63,7 @@
         <TableRow>
             <TextView
                 android:id="@+id/tvMinDown"
-                android:textColor="@color/labelColorBlue"
+                android:textColor="@color/colorAccent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tvMinDown" />
@@ -78,7 +78,7 @@
         <TableRow>
             <TextView
                 android:id="@+id/tvNbUp"
-                android:textColor="@color/labelColorBlue"
+                android:textColor="@color/colorAccent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tvNbUp"/>
@@ -93,7 +93,7 @@
         <TableRow>
             <TextView
                 android:id="@+id/tvNbDown"
-                android:textColor="@color/labelColorBlue"
+                android:textColor="@color/colorAccent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tvNbDown"/>
@@ -108,7 +108,7 @@
         <TableRow>
             <TextView
                 android:id="@+id/tvDisplayToast"
-                android:textColor="@color/labelColorBlue"
+                android:textColor="@color/colorAccent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tvDisplayToast"/>
@@ -124,7 +124,7 @@
         <TableRow>
             <TextView
                 android:id="@+id/tvMethod"
-                android:textColor="@color/labelColorBlue"
+                android:textColor="@color/colorAccent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tvMethod"/>
