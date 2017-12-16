@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin" >
+
+    <TableLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="1">
+        <TableRow>
+            <TextView
+                android:id="@+id/tvDelayUp"
+                android:textColor="@color/labelColorBlue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tvDelayUp"/>
+
+            <EditText
+                android:id="@+id/etDelayUp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:labelFor="@+id/etDelayUp" >
+            </EditText>
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:id="@+id/tvDelayDown"
+                android:textColor="@color/labelColorBlue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tvDelayDown"/>
+            <EditText
+                android:id="@+id/etDelayDown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:labelFor="@+id/etDelayDown" >
+            </EditText>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/tvMinUp"
+                android:textColor="@color/labelColorBlue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tvMinUp"/>
+            <EditText
+                android:id="@+id/etMinUp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:labelFor="@+id/etMinUp" >
+            </EditText>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/tvMinDown"
+                android:textColor="@color/labelColorBlue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tvMinDown" />
+            <EditText
+                android:id="@+id/etMinDown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:labelFor="@+id/etMinDown" >
+            </EditText>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/tvNbUp"
+                android:textColor="@color/labelColorBlue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tvNbUp"/>
+            <EditText
+                android:id="@+id/etNbUp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:labelFor="@+id/etNbUp" >
+            </EditText>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/tvNbDown"
+                android:textColor="@color/labelColorBlue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tvNbDown"/>
+            <EditText
+                android:id="@+id/etNbDown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:labelFor="@+id/etNbDown" >
+            </EditText>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/tvDisplayToast"
+                android:textColor="@color/labelColorBlue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tvDisplayToast"/>
+
+            <CheckBox
+                android:id="@+id/chkDisplayToast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@null"
+                android:drawableStart="?android:attr/listChoiceIndicatorMultiple"
+                android:text="@null"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/tvMethod"
+                android:textColor="@color/labelColorBlue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tvMethod"/>
+            <Spinner
+                android:id="@+id/spMethod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="0dp" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/lblWarningMethod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_marginTop="10dp"
+                android:layout_span="2"
+                android:text="@null"
+                android:textColor="@color/warning_method"
+                android:textSize="12sp"
+                android:textStyle="italic" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/lblWarning"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_span="2"
+                android:text="@string/lblWarning"
+                android:textColor="@color/warning"
+                android:textSize="12sp"
+                android:textStyle="italic" />
+        </TableRow>
+        <TableRow>
+            <Button
+                android:id="@+id/btApply"
+                android:layout_span="2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:text="@string/btApply" />
+        </TableRow>
+        <TableRow>
+            <ToggleButton
+                android:id="@+id/toggleOnOff"
+                android:layout_span="2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:textOff="@string/toggleOn"
+                android:textOn="@string/toggleOff" />
+        </TableRow>
+    </TableLayout>
+
+</ScrollView>
