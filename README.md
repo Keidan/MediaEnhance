@@ -20,10 +20,9 @@ download the software :
 
 	mkdir devel
 	cd devel
-	git clone git://github.com/Keidan/ATK.git
 	git clone git://github.com/Keidan/MediaEnhance.git
 	cd MediaEnhance
- 	Use with eclipse 
+ 	Use with android studio 
 	
 
 License (like GPL)
